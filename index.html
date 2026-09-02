@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090d">
+<title>MediaHub — Single Page</title>
+<style>
+:root{--bg:#f4f5f8;--card:#fff;--text:#11131a;--muted:#6d7481;--line:#e1e4ea;--accent:#7c3aed}
+:root[data-theme=dark]{--bg:#07080c;--card:#101217;--text:#f6f7fb;--muted:#9aa2af;--line:#252a34;--accent:#9b6cff}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input,textarea,select{font:inherit}button,a{cursor:pointer}
+header{position:sticky;top:0;z-index:30;height:68px;display:flex;align-items:center;gap:18px;padding:0 4%;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.logo{font-weight:900;font-size:20px;letter-spacing:-1px;white-space:nowrap}.logo b{color:var(--accent)}.logo small{font-size:8px;opacity:.6;margin-left:4px}
+nav{display:flex;gap:3px;overflow:auto}nav button,.theme,.admin,.wa{border:0;border-radius:9px;padding:8px 11px;background:transparent;color:var(--muted);white-space:nowrap}nav .active{background:var(--text);color:var(--bg)}
+.right{margin-left:auto;display:flex;gap:6px;align-items:center}.search{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:0 9px}.search input{width:120px;border:0;outline:0;background:transparent;color:var(--text);padding:8px}.theme{background:var(--bg);color:var(--text)}.admin{background:var(--text);color:var(--bg)}.wa{background:#18a56d;color:#fff;text-decoration:none}
+main{padding-bottom:35px}.heroWrap{padding:16px 4% 0}.hero{min-height:490px;border-radius:22px;background-size:cover;background-position:center;position:relative;overflow:hidden;display:flex;align-items:flex-end}.heroText{max-width:670px;padding:45px}.tag{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.hero h1{font-size:clamp(38px,6vw,72px);line-height:.98;margin:12px 0}.hero p{color:#d8dbe2;line-height:1.5;max-width:590px}.actions{display:flex;gap:9px}.play,.more{border:0;border-radius:9px;padding:11px 17px;font-weight:800}.play{background:#fff;color:#111}.more{background:#ffffff22;color:#fff;border:1px solid #ffffff30}.arrow{position:absolute;top:50%;transform:translateY(-50%);border:0;background:#0008;color:#fff;border-radius:50%;width:42px;height:42px;font-size:28px}.prev{left:16px}.next{right:16px}.dots{position:absolute;right:25px;bottom:20px;display:flex;gap:5px}.dots button{width:7px;height:7px;border:0;border-radius:10px;background:#777}.dots .on{width:23px;background:#fff}
+.section{padding:28px 4% 0}.sectionHead{display:flex;align-items:end;justify-content:space-between;margin-bottom:12px}.sectionHead h2{margin:0 0 3px;font-size:22px}.sectionHead small{color:var(--muted)}.sectionHead button{border:0;background:transparent;color:var(--accent);font-weight:700}.row{display:flex;gap:13px;overflow-x:auto;padding-bottom:10px}.card{min-width:170px;width:170px}.poster{height:255px;border-radius:12px;overflow:hidden;position:relative;background:var(--card);border:1px solid var(--line)}.poster img{width:100%;height:100%;object-fit:cover;display:block}.shade{position:absolute;inset:0;background:linear-gradient(0deg,#000b,transparent 55%)}.poster .playIcon{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:34px;opacity:0;text-shadow:0 2px 15px #000}.card:hover .playIcon{opacity:1}.poster label{position:absolute;bottom:8px;left:8px;background:#0009;color:#fff;padding:4px 6px;border-radius:5px;font-size:10px}.card h3{margin:8px 2px 3px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card p{margin:0 2px;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+footer{padding:35px 4%;color:var(--muted);font-size:11px;display:flex;justify-content:space-between}
+.modal{position:fixed;inset:0;z-index:100;background:#000d;display:grid;place-items:center;padding:10px}.box{width:min(100%,1000px);max-height:95vh;overflow:auto;background:var(--card);border-radius:16px;padding:14px;position:relative}.close{position:absolute;right:9px;top:8px;border:0;background:#000b;color:#fff;border-radius:50%;width:35px;height:35px;font-size:23px;z-index:5}.playerHead{display:flex;justify-content:space-between;align-items:center;padding:0 42px 10px 2px}.playerHead h2{margin:2px 0;font-size:20px}.playerHead small{color:var(--muted)}.fs{border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:8px;padding:8px}.stage{background:#000;border-radius:11px;overflow:hidden;min-height:280px;display:grid;place-items:center}.stage video{display:block;width:100%;max-height:78vh;background:#000}.stage iframe{width:100%;height:62vh;border:0}.audio{width:100%;min-height:330px;display:grid;place-items:center;align-content:center;color:#fff;background:radial-gradient(circle,#272c38,#07080c)}.disc{width:125px;height:125px;border-radius:50%;display:grid;place-items:center;background:#222;font-size:50px;margin-bottom:15px}.audio audio{width:min(650px,90%)}.source{text-align:center;color:#fff;padding:75px 20px}.source p{color:#aab1bc}.source a{display:inline-block;padding:10px 14px;border-radius:8px;background:var(--accent);color:#fff;text-decoration:none;font-weight:700}
+.adminBox{width:min(100%,680px)}.adminHead{padding-right:42px}.adminHead span{font-size:10px;color:var(--muted);letter-spacing:.14em}.adminHead h2{margin:3px 0}.form{display:grid;gap:10px;margin-top:17px}.form input,.form textarea,.form select{width:100%;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text);padding:11px}.form textarea{min-height:80px}.form label.file{border:1px dashed var(--line);padding:11px;border-radius:9px;display:grid;gap:6px}.form label small{color:var(--muted)}.form button{border:0;background:var(--accent);color:#fff;border-radius:9px;padding:11px;font-weight:800}.check{display:flex;align-items:center;gap:7px;color:var(--muted)}.check input{width:auto}.msg{padding:9px;background:var(--bg);border-radius:8px;margin-top:10px;color:var(--muted)}
+@media(max-width:700px){header{padding:0 10px}.logo{font-size:17px}nav{display:none}.search{display:none}.wa{display:none}.heroWrap,.section{padding-left:10px;padding-right:10px}.hero{min-height:450px;border-radius:16px}.heroText{padding:25px}.hero h1{font-size:43px}.arrow{display:none}.card{min-width:145px;width:145px}.poster{height:218px}footer{display:block;padding:30px 10px}.playerHead{align-items:flex-start}.stage iframe{height:45vh}}
+.source-btn{display:inline-block;margin-top:14px;background:var(--accent);color:#fff;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:800}.source-btn:hover{filter:brightness(1.08)}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">MEDIA<b>HUB</b><small>PRO</small></div>
+  <nav id="nav"></nav>
+  <div class="right">
+    <div class="search">⌕ <input id="search" placeholder="Search"></div>
+    <button class="theme" id="theme">☀</button>
+    <a class="wa" target="_blank" rel="noopener" href="https://wa.me/918602677643">WhatsApp</a>
+    <button class="admin" id="adminBtn">Admin</button>
+  </div>
+</header>
+<main>
+  <section class="heroWrap"><div id="hero"></div></section>
+  <div id="sections"></div>
+</main>
+<footer><span>MediaHub Pro</span><span>Publish only media you are authorized to distribute.</span></footer>
+<div id="modal"></div>
+
+<script>
+const KEY="mediahub-single-v1";
+const DEMO=[
+ {id:"d1",title:"Featured Music Video",category:"music",description:"Add your latest music videos from Admin.",poster:"https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1400",url:""},
+ {id:"d2",title:"Upcoming Movie Trailer",category:"trailer",description:"Showcase upcoming trailers in the hero slideshow.",poster:"https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1400",url:""},
+ {id:"d3",title:"Featured Movie",category:"movie",description:"Add your featured movie here.",poster:"https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=1400",url:""}
+];
+let items=JSON.parse(localStorage.getItem(KEY)||"null")||DEMO;
+let filter="all", slide=0, timer=null;
+const DB_NAME="mediahub-offline-media-v1", DB_STORE="files";
+let objectUrls=[];
+function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=()=>r.result.createObjectStore(DB_STORE);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function saveBlob(id,file){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,"readwrite");tx.objectStore(DB_STORE).put(file,id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+async function getBlob(id){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,"readonly");const r=tx.objectStore(DB_STORE).get(id);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error)})}
+async function deleteBlob(id){try{const db=await openDB();await new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,"readwrite");tx.objectStore(DB_STORE).delete(id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}catch(e){}}
+function isLocalPage(){return !/^https?:$/i.test(location.protocol)}
+function youtubeWatch(u){try{const x=new URL(u);let id=x.searchParams.get("v");if(x.hostname.includes("youtu.be"))id=x.pathname.slice(1).split("/")[0];if(!id&&x.pathname.includes("/shorts/"))id=x.pathname.split("/shorts/")[1].split("/")[0];return id?"https://www.youtube.com/watch?v="+id:u}catch{return u}}
+const nav=document.getElementById("nav"), hero=document.getElementById("hero"), sections=document.getElementById("sections");
+
+const names={all:"Home",music:"Music",movie:"Movies",trailer:"Trailers"};
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function save(){localStorage.setItem(KEY,JSON.stringify(items))}
+function kind(u){
+ try{
+  if(!u)return "";
+  const x=new URL(u);
+  if(/youtu\.be|youtube\.com/.test(x.hostname))return "youtube";
+  const p=x.pathname.toLowerCase();
+  if(/\.(mp3|m4a|aac|ogg|wav)$/.test(p))return "audio";
+  if(/\.(mp4|webm|ogv|mov)$/.test(p))return "video";
+  return "webpage";
+ }catch{return ""}
+}
+function yt(u){
+ try{
+  const x=new URL(u);let id=x.searchParams.get("v");
+  if(x.hostname.includes("youtu.be"))id=x.pathname.slice(1).split("/")[0];
+  if(!id&&x.pathname.includes("/shorts/"))id=x.pathname.split("/shorts/")[1].split("/")[0];
+  return id?"https://www.youtube-nocookie.com/embed/"+id+"?rel=0":null;
+ }catch{return null}
+}
+function filtered(){
+ const q=document.getElementById("search").value.toLowerCase().trim();
+ return items.filter(x=>(filter==="all"||x.category===filter)&&(!q||`${x.title} ${x.description}`.toLowerCase().includes(q)));
+}
+function drawNav(){
+ nav.innerHTML=Object.entries(names).map(([k,v])=>`<button class="${filter===k?"active":""}" onclick="setFilter('${k}')">${v}</button>`).join("");
+}
+function setFilter(k){filter=k;slide=0;draw();}
+
+function draw(){
+ drawNav(); const a=filtered();
+ if(!a.length){hero.innerHTML='<div class="loader">No media found.</div>';sections.innerHTML="";return}
+ if(slide>=a.length)slide=0;
+ const h=a[slide];
+ hero.innerHTML=`<div class="hero" style="background-image:linear-gradient(90deg,#05070cf5 0%,#05070cb8 38%,#05070c11 100%),linear-gradient(0deg,#05070cbf,transparent 55%),url('${esc(h.poster||"")}')">
+   <div class="heroText"><div class="tag">${esc(h.category)}</div><h1>${esc(h.title)}</h1><p>${esc(h.description||"Featured on MediaHub.")}</p>
+   <div class="actions"><button class="play" onclick="openPlayer('${h.id}')">▶ Play</button><button class="more" onclick="openPlayer('${h.id}')">More Info</button></div></div>
+   <button class="arrow prev" onclick="prev()">‹</button><button class="arrow next" onclick="next()">›</button>
+   <div class="dots">${a.map((_,i)=>`<button class="${i===slide?"on":""}" onclick="go(${i})"></button>`).join("")}</div>
+ </div>`;
+ const groups=[["music","Latest Music Videos"],["movie","Latest Movies"],["trailer","Upcoming Trailers"],["video","Latest Videos"]];
+ sections.innerHTML=groups.map(([c,title])=>{
+   const list=items.filter(x=>x.category===c);
+   if(!list.length)return "";
+   return `<section class="section"><div class="sectionHead"><div><h2>${title}</h2><small>Freshly added to your collection</small></div><button onclick="setFilter('${c}')">View all ›</button></div>
+   <div class="row">${list.slice(0,12).map(x=>`<article class="card" onclick="openPlayer('${x.id}')"><div class="poster">${x.poster?`<img src="${esc(x.poster)}" alt="">`:`<div style="height:100%;display:grid;place-items:center">MEDIAHUB</div>`}<div class="shade"></div><div class="playIcon">▶</div><label>${esc(x.category)}</label></div><h3>${esc(x.title)}</h3><p>${esc(x.description||"")}</p></article>`).join("")}</div></section>`;
+ }).join("");
+}
+function prev(){const a=filtered();slide=(slide-1+a.length)%a.length;draw()}
+function next(){const a=filtered();slide=(slide+1)%a.length;draw()}
+function go(i){slide=i;draw()}
+function auto(){clearInterval(timer);timer=setInterval(()=>{if(filtered().length>1)next()},5500)}
+document.getElementById("search").addEventListener("input",()=>{slide=0;draw();auto()});
+document.getElementById("theme").onclick=()=>{let d=document.documentElement.dataset.theme==="dark";document.documentElement.dataset.theme=d?"light":"dark";localStorage.setItem("mh-theme",d?"light":"dark");document.getElementById("theme").textContent=d?"☾":"☀"};
+document.documentElement.dataset.theme=localStorage.getItem("mh-theme")||"dark";
+document.getElementById("theme").textContent=document.documentElement.dataset.theme==="dark"?"☀":"☾";
+
+async function openPlayer(id){
+ const x=items.find(v=>v.id===id); if(!x)return;
+ objectUrls.forEach(u=>URL.revokeObjectURL(u)); objectUrls=[];
+ let u=x.url||"";
+ if(u.startsWith("offline:")){
+  const blob=await getBlob(u.slice(8));
+  if(!blob){alert("Offline media file नहीं मिला। इसे Admin से फिर upload करें।");return}
+  u=URL.createObjectURL(blob); objectUrls.push(u);
+ }
+ const k=kind(u); let body="";
+ if(!u)body=`<div class="source"><strong>No media attached</strong><p>Admin me MP3/MP4/WebM file ya media link add karein.</p></div>`;
+ else if(k==="youtube" && isLocalPage())body=`<div class="source"><div style="font-size:48px">▶️</div><strong>YouTube embed needs a web page</strong><p>Aapki HTML file phone ke Downloads se open hai, isliye YouTube Error 153 aa raha hai. Website ko HTTP/HTTPS par host karne ke baad video isi player me chalega.</p><a class="source-btn" target="_blank" rel="noopener" href="${esc(youtubeWatch(u))}">↗ Open on YouTube</a></div>`;
+ else if(k==="youtube")body=`<iframe class="mediaTarget" src="${esc(yt(u))}" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+ else if(k==="video")body=`<video class="mediaTarget" id="vid" controls playsinline preload="metadata" poster="${esc(x.poster||"")}" src="${esc(u)}"></video>`;
+ else if(k==="audio")body=`<div class="audio mediaTarget"><div class="disc">♪</div><h3>${esc(x.title)}</h3><audio controls preload="metadata" src="${esc(u)}"></audio></div>`;
+ else body=`<div class="source"><div style="font-size:48px">🌐</div><strong>Source Web Page</strong><p>This is a webpage link, not a direct media file.</p><a class="source-btn" target="_blank" rel="noopener" href="${esc(u)}">↗ Open Source Page</a></div>`;
+ document.getElementById("modal").innerHTML=`<div class="modal" onclick="if(event.target===this)closeModal()"><div class="box"><button class="close" onclick="closeModal()">×</button><div class="playerHead"><div><small>${esc(x.category)}</small><h2>${esc(x.title)}</h2></div><button class="fs" onclick="fullScreen()">⛶ Fullscreen</button></div><div class="stage">${body}</div></div></div>`;
+}
+function closeModal(){document.getElementById("modal").innerHTML=""}
+function fullScreen(){
+ const el=document.querySelector(".mediaTarget");
+ if(!el)return;
+ if(document.fullscreenElement){document.exitFullscreen?.();return}
+ el.requestFullscreen?.({navigationUI:"hide"}).catch(()=>{});
+}
+
+document.getElementById("adminBtn").onclick=()=>openAdmin();
+function openAdmin(){
+ document.getElementById("modal").innerHTML=`<div class="modal" onclick="if(event.target===this)closeModal()"><div class="box adminBox"><button class="close" onclick="closeModal()">×</button><div class="adminHead"><span>LOCAL SINGLE-FILE DASHBOARD</span><h2>Admin Dashboard</h2></div>
+ <form class="form" onsubmit="addItem(event)">
+ <input id="title" placeholder="Title" required><select id="category"><option value="music">Music Video</option><option value="movie">Movie</option><option value="trailer">Upcoming / Trailer</option><option value="video">Video</option></select>
+ <textarea id="desc" placeholder="Description"></textarea>
+ <label class="file">🖼 Poster / Thumbnail<input id="posterFile" type="file" accept="image/*"><small id="posterName">Choose image</small></label>
+ <label class="file">📁 Offline MP3 / MP4 / WebM<input id="mediaFile" type="file" accept="audio/*,video/*"><small id="mediaName">Choose media file</small></label>
+ <div style="text-align:center;color:var(--muted);font-size:11px">OR PASTE A LINK</div>
+ <input id="link" placeholder="YouTube / direct MP3 / MP4 / WebM URL">
+ <label class="check"><input id="pub" type="checkbox" checked> Show on public page</label>
+ <button>Save & Publish</button>
+ </form>
+ <div id="adminList" style="margin-top:16px"></div></div></div>`;
+ document.getElementById("posterFile").onchange=e=>document.getElementById("posterName").textContent=e.target.files[0]?.name||"Choose image";
+ document.getElementById("mediaFile").onchange=e=>document.getElementById("mediaName").textContent=e.target.files[0]?.name||"Choose media file";
+ renderAdminList();
+}
+function fileData(file){
+ return new Promise((resolve,reject)=>{
+  if(!file)return resolve("");
+  const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);
+ });
+}
+async function addItem(e){
+ e.preventDefault();
+ const poster=await fileData(document.getElementById("posterFile").files[0]);
+ const mediaFile=document.getElementById("mediaFile").files[0];
+ const link=document.getElementById("link").value.trim();
+ if(!mediaFile&&!link){alert("Media file ya link add karein.");return}
+ const id="i"+Date.now();
+ let url=link;
+ if(mediaFile){await saveBlob(id,mediaFile);url="offline:"+id;}
+ items.unshift({id,title:document.getElementById("title").value,category:document.getElementById("category").value,description:document.getElementById("desc").value,poster:poster||"",url,visible:document.getElementById("pub").checked});
+ save();draw();openAdmin();alert(mediaFile?"Offline media saved. Play dabane par direct player me chalega.":"Saved locally in this browser.");
+}
+function renderAdminList(){
+ const el=document.getElementById("adminList"); if(!el)return;
+ el.innerHTML=`<h3 style="margin-bottom:8px">Saved Items</h3>`+items.map(x=>`<div style="display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)"><span style="flex:1;font-size:13px">${esc(x.title)} <small style="color:var(--muted)">(${esc(x.category)})</small></span><button onclick="deleteItem('${x.id}')" style="border:1px solid var(--line);background:var(--bg);color:var(--text);padding:6px 8px;border-radius:7px">Delete</button></div>`).join("");
+}
+async function deleteItem(id){const x=items.find(v=>v.id===id);if(x?.url?.startsWith("offline:"))await deleteBlob(x.url.slice(8));items=items.filter(x=>x.id!==id);save();draw();openAdmin()}
+draw();auto();
+</script>
+</body>
+</html>
